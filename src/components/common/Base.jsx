@@ -1,119 +1,133 @@
 import { useState } from 'react';
 import { ConfigProvider, Menu } from 'antd';
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { IoMenu } from "react-icons/io5";
 import { TbLayoutDashboardFilled } from "react-icons/tb";
 import { CgCarousel } from "react-icons/cg";
-import { MdOutlineCategory, MdOutlineLocalShipping, MdOutlineReviews } from "react-icons/md";
+import { MdOutlineCategory, MdOutlineLocalShipping } from "react-icons/md";
 import { TbBrandCodesandbox } from "react-icons/tb";
 import { BiSolidPurchaseTag } from "react-icons/bi";
-import { FaPenToSquare } from "react-icons/fa6";
+import { FaBasketShopping, FaPenToSquare } from "react-icons/fa6";
 import { LuBoxes } from "react-icons/lu";
 
 const items = [
     {
-        key: '1',
+        key: '/',
         icon: <TbLayoutDashboardFilled/>,
         label: 'Dashbaord',
     },
     {
-        key: 'sub1',
+        key: 'banners',
         icon: <CgCarousel />,
         label: 'Banners',
         children: [
             {
-                key: '2',
-                // icon: '',
+                key: '/banner',
                 label: 'Banners',
             },
             {
-                key: '3',
+                key: '/banner/add',
                 label: 'Add Banner',
             }
         ]
     },
     {
-        key: 'sub2',
+        key: 'category',
         icon: <MdOutlineCategory />,
         label: 'Category',
         children: [
             {
-                key: '4',
+                key: '/category',
                 label: 'Category',
             },
             {
-                key: '5',
+                key: '/category/add',
                 label: 'Add Category',
             },
         ]
     },
     {
-        key: 'sub3',
+        key: 'products',
         icon: <LuBoxes />,
         label: 'Products',
         children: [
             {
-                key: '6',
+                key: '/product',
                 label: 'Products',
             },
             {
-                key: '7',
+                key: '/product/add',
                 label: 'Add Product',
             }
         ]
     },
     {
-        key: 'sub4',
+        key: 'brands',
         icon: <TbBrandCodesandbox />,
         label: 'Brands',
         children: [
             {
-                key: '8',
+                key: '/brand',
                 label: 'Brands',
             },
             {
-                key: '9',
+                key: '/brand/add',
                 label: 'Add Brand',
             }
         ]
     },
     {
-        key: 'sub5',
+        key: 'shipping',
         icon: <MdOutlineLocalShipping />,
         label: 'Shipping',
         children: [
             {
-                key: '10',
+                key: '/shipping',
                 label: 'Shipping',
             },
             {
-                key: '11',
+                key: '/shipping/add',
                 label: 'Add Shipping',
             }
         ]
     },
     {
-        key: '12',
-        icon: <BiSolidPurchaseTag />,
+        key: '/orders',
+        icon: <FaBasketShopping />,
         label: 'Orders',
     },
+    // {
+    //     key: '/reviews',
+    //     icon: <MdOutlineReviews />,
+    //     label: 'Reviews',
+    // },
     {
-        key: '13',
-        icon: <MdOutlineReviews />,
-        label: 'Reviews',
-    },
-    {
-        key: 'sub6',
+        key: 'posts',
         icon: <FaPenToSquare />,
         label: 'Posts',
         children: [
             {
-                key: '14',
+                key: '/post',
                 label: 'Posts',
             },
             {
-                key: '15',
+                key: '/post/add',
                 label: 'Add Post',
+            }
+        ]
+    },
+    {
+        key: 'tags',
+        icon: <BiSolidPurchaseTag />,
+        label: 'Tags',
+        children: [
+            {
+                key: '/tag',
+                label: 'Tags',
+            },
+            {
+                key: '/tag/add',
+                label: 'Add Tag',
             }
         ]
     },
@@ -122,9 +136,18 @@ const items = [
 export default function Base() {
     const [collapsed, setCollapsed] = useState(false);
     const toggleCollapsed = () => {
-      setCollapsed(!collapsed);
+        setCollapsed(!collapsed);
     };
-
+    
+    const navigate = useNavigate();
+    const location = useLocation();
+    
+    const handleMenuClick = ({ key }) => {
+      if (key) {
+        navigate(key);
+      }
+    };
+    
     return (
         <>
             <div className="flex flex-1">
@@ -132,11 +155,11 @@ export default function Base() {
                 theme={{
                     components: {
                     Menu: {
-                        /* here is your component tokens */
                         collapsedWidth: 60,
                         iconSize: 20,
                         collapsedIconSize: 20,
-                        
+                        darkItemHoverBg: 'rgb(0 0 0 / 0.5)',
+                        darkItemSelectedColor: 'rgb(200 200 255 / 1)',
                     },
                     },
                 }}
@@ -145,29 +168,21 @@ export default function Base() {
                     subMenuCloseDelay = "0.1"
                     subMenuOpenDelay= "0.1"
                     className=' max-w-52 sticky overflow-auto'
-                    defaultSelectedKeys={['1']}
-                    // defaultOpenKeys={['sub1']}
+                    selectedKeys={[location.pathname]}
+                    
                     mode="inline"
                     theme="dark"
                     inlineCollapsed={collapsed}
                     items={items}
+                    onClick={handleMenuClick}
+                    // style={{ flex: "auto" }}
                 />
             </ConfigProvider>
-                {/* <Sidebar collapsed={!isSidebarOpen}>
-                    <Menu>
-                        <MenuItem>Dashboard</MenuItem>
-                        <SubMenu title="Posts">
-                            <MenuItem>Posts</MenuItem>
-                            <MenuItem>Categories</MenuItem>
-                        </SubMenu>
-                    </Menu>
-                </Sidebar> */}
                 <div className="flex flex-col flex-1 min-h-screen overflow-y-auto">
                     <header className='bg-white shadow-md sticky top-0 z-10'>
                         <nav className="">
                             <div className="mx-auto max-w-7xl px-1 sm:px-3 lg:px-5">
                                 <div className="relative flex h-16 items-center justify-between">
-                                    {/* <!-- Mobile menu button--> */}
                                     <div className="absolute inset-y-0 left-0 flex items-center">
                                         <button 
                                             type="button" 
